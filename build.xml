@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     08.11.2013 16:22:27                                                        
+
+     matches    
+     Sample for Test, Compile, Run, Clean
+                   
+     mhirdes                                                                
+     ====================================================================== -->
+<project name="matches" default="run" basedir=".">
+    <description>
+          Sample for Test, Compile, Run, Clean
+    </description>
+	
+	<property name="dir.src"   value="src"/>
+	<property name="dir.build"   value="build"/>
+	<property name="dir.distribution"   value="dist"/>
+	
+	<tstamp />
+	<echoproperties/>
+	
+	<path id="classpath">
+      <pathelement location="${dir.src}" />
+      <pathelement location="lib/junit.jar" />
+	  <pathelement path="${build}"/>
+    </path>
+	
+    <target name="run" depends="compile" description="Run the programm">
+    	<java classpath="${dir.build}" classname="org.marchirdes.matches.Matches" fork="true"/>
+    </target>
+
+    <target name="compile" depends="clean,prepare" description="Compiles the source">
+    	<javac srcdir="${dir.src}" destdir="${dir.build}" classpathref="classpath"/>
+    </target>
+	
+	<target name="distribute" depends="compile,test" description="Distribute the programm">
+		<mkdir dir="${dir.distribution}/lib/" />
+		<jar jarfile="${dir.distribution}/lib/Matches_${DSTAMP}.jar" basedir="${dir.build}" />
+	</target>
+	
+	<target name="test" depends="compile" description="Run a test">
+	  <junit haltonfailure="true" printsummary="true">
+	  	<formatter type="plain" usefile="false" />
+	  	<classpath id="classpath">
+	  	  <pathelement location="lib/junit.jar" />
+  	      <pathelement location="lib/org.hamcrest.core.jar" />
+		  <pathelement location="${dir.build}" />
+  	    </classpath>
+	    <test name="org.marchirdes.matches.test.ComputerControllerTest" />
+	  </junit>
+    </target>
+	
+	<target name="prepare" description="Make Directories">
+		<mkdir dir="${dir.build}" />
+		<mkdir dir="${dir.distribution}" />
+	</target>
+	
+	<target name="clean" description="Delete Directories">
+		<delete dir="${dir.build}" />
+		<delete dir="${dir.distribution}" />
+	</target>
+	
+</project>
